@@ -3,7 +3,7 @@
 A dancing green cat that forces you to take breaks.
 
 ## Install (Chrome/Edge)
-1. Download this repo (Code → Download ZIP)
+1. Download this repo 
 2. Open `chrome://extensions`
 3. Turn on **Developer mode**
 4. Click **Load unpacked** → select the `CatBreak` folder
@@ -18,7 +18,7 @@ A dancing green cat that forces you to take breaks.
 一只跳舞的绿猫，强制你休息。
 
 ## 安装（Chrome/Edge）
-1. 下载仓库（Code → Download ZIP）
+1. 下载仓库
 2. 打开 `chrome://extensions`
 3. 打开 **开发者模式**
 4. 点击 **加载已解压的扩展** → 选择 `CatBreak` 文件夹
