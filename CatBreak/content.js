@@ -13,7 +13,7 @@
   function createOverlay(countdownSeconds) {
     if (overlay) return;
 
-    const videoUrl = chrome.runtime.getURL('assets/cat.webm');
+    const videoUrl = chrome.runtime.getURL('assets/cat.mp4');
 
     overlay = document.createElement('div');
     overlay.id = 'catbreak-overlay';
@@ -21,7 +21,7 @@
       <div class="catbreak-backdrop"></div>
       <div class="catbreak-cat-container">
         <video class="catbreak-cat-video" autoplay loop muted playsinline>
-          <source src="${videoUrl}" type="video/webm">
+          <source src="${videoUrl}" type="video/mp4">
         </video>
       </div>
       <div class="catbreak-message">
@@ -87,6 +87,13 @@
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'showCat') {
       createOverlay(message.countdownSeconds || 30);
+    }
+    if (message.action === 'hideCat') {
+      // Background told us the user dismissed the cat in another tab.
+      if (overlay && overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      }
+      overlay = null;
     }
   });
 })();

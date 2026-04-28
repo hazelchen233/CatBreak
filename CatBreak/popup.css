@@ -1,47 +1,116 @@
+/* ✦ CatBreak — 鬼畜可爱风 Black Theme ✦ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(1.3); }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(255, 45, 120, 0.6),  0 0 32px rgba(224, 64, 251, 0.3); }
+  50%       { box-shadow: 0 0 28px rgba(255, 45, 120, 0.95), 0 0 56px rgba(0, 229, 255, 0.5); }
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  background: #101010;
+}
+
 body {
   width: 320px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #1a1a2e;
-  color: #eee;
+  background: #101010;
+  color: #fff;
 }
 
 .popup-container {
-  padding: 20px;
+  padding: 18px 16px;
 }
 
+/* ── Header ── */
 .popup-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+}
+
+.popup-header::before {
+  content: "✦ ˚ ✦ ˚ ✦ ˚ ✦";
+  display: block;
+  font-size: 10px;
+  color: #ff2d78;
+  letter-spacing: 5px;
+  margin-bottom: 6px;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.popup-header::after {
+  content: "✦ ˚ ✦ ˚ ✦ ˚ ✦";
+  display: block;
+  font-size: 10px;
+  color: #00e5ff;
+  letter-spacing: 5px;
+  margin-top: 6px;
+  animation: sparkle 2s ease-in-out infinite 1s;
 }
 
 .popup-header h1 {
-  font-size: 22px;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 2px;
   margin-bottom: 4px;
-  background: linear-gradient(135deg, #7cc576, #4ea84e);
+  background: linear-gradient(135deg, #ff2d78, #e040fb, #00e5ff, #ff2d78);
+  background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: float 3s ease-in-out infinite, gradientShift 4s ease infinite;
 }
 
 .popup-desc {
-  font-size: 12px;
-  color: #888;
+  font-size: 10px;
+  color: #e040fb;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(224, 64, 251, 0.7);
 }
 
+/* ── Sections ── */
 .popup-section {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 45, 120, 0.04);
+  border: 1px solid rgba(255, 45, 120, 0.22);
+  border-radius: 14px;
+  transition: border-color 0.3s;
+}
+
+.popup-section:hover {
+  border-color: rgba(224, 64, 251, 0.45);
 }
 
 .setting-label {
   display: block;
-  font-size: 13px;
-  color: #aaa;
-  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #e040fb;
+  margin-bottom: 7px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  text-shadow: 0 0 6px rgba(224, 64, 251, 0.5);
 }
 
 .setting-row {
@@ -51,13 +120,20 @@ body {
   gap: 10px;
 }
 
+.setting-row > label:first-child {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ── Range Slider ── */
 .range-input {
   flex: 1;
   -webkit-appearance: none;
   appearance: none;
-  height: 6px;
-  border-radius: 3px;
-  background: #333;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #ff2d78, #e040fb, #00e5ff);
   outline: none;
 }
 
@@ -67,19 +143,27 @@ body {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #7cc576;
+  background: #ffffff;
   cursor: pointer;
+  border: 2px solid #ff2d78;
+  box-shadow: 0 0 8px #ff2d78, 0 0 16px rgba(224, 64, 251, 0.6);
+  transition: box-shadow 0.2s;
+}
+
+.range-input::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 14px #ff2d78, 0 0 28px rgba(0, 229, 255, 0.7);
 }
 
 .range-value {
   min-width: 32px;
   text-align: right;
-  font-size: 16px;
-  font-weight: 600;
-  color: #7cc576;
+  font-size: 17px;
+  font-weight: 800;
+  color: #00e5ff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
 }
 
-/* Toggle Switch */
+/* ── Toggle Switch ── */
 .toggle {
   position: relative;
   display: inline-block;
@@ -96,11 +180,9 @@ body {
 .toggle-slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #444;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #1a1a1a;
+  border: 1px solid #333;
   border-radius: 24px;
   transition: 0.3s;
 }
@@ -110,69 +192,83 @@ body {
   position: absolute;
   height: 18px;
   width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
+  left: 2px;
+  bottom: 2px;
+  background: #555;
   border-radius: 50%;
   transition: 0.3s;
 }
 
 .toggle input:checked + .toggle-slider {
-  background-color: #7cc576;
+  background: linear-gradient(135deg, #ff2d78, #e040fb);
+  border-color: #ff2d78;
+  box-shadow: 0 0 12px rgba(255, 45, 120, 0.55);
 }
 
 .toggle input:checked + .toggle-slider::before {
   transform: translateX(20px);
+  background: #fff;
+  box-shadow: 0 0 6px rgba(255, 45, 120, 0.8);
 }
 
+/* ── Whitelist Textarea ── */
 .whitelist-input {
   width: 100%;
-  height: 70px;
+  height: 68px;
   padding: 8px 10px;
   font-size: 12px;
   font-family: monospace;
-  background: #252540;
-  color: #ddd;
-  border: 1px solid #444;
-  border-radius: 8px;
+  background: #080808;
+  color: #00e5ff;
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 10px;
   resize: vertical;
   outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .whitelist-input:focus {
-  border-color: #7cc576;
+  border-color: #00e5ff;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
 }
 
 .whitelist-input::placeholder {
-  color: #666;
+  color: #2a2a2a;
 }
 
+/* ── Test Button ── */
 .test-btn {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   color: #fff;
-  background: linear-gradient(135deg, #7cc576, #4ea84e);
+  background: linear-gradient(135deg, #ff2d78, #e040fb, #00e5ff, #ff2d78);
+  background-size: 300% 300%;
   border: none;
-  border-radius: 10px;
+  border-radius: 50px;
   cursor: pointer;
-  transition: all 0.2s;
+  animation: gradientShift 3s ease infinite, glowPulse 2s ease-in-out infinite;
+  transition: transform 0.15s;
 }
 
 .test-btn:hover {
-  opacity: 0.9;
-  transform: scale(1.02);
+  transform: scale(1.04);
 }
 
 .test-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
 }
 
+/* ── Status Message ── */
 .status-msg {
   text-align: center;
   font-size: 12px;
-  color: #7cc576;
+  color: #ff2d78;
   margin-top: 8px;
   min-height: 18px;
+  text-shadow: 0 0 8px rgba(255, 45, 120, 0.7);
+  letter-spacing: 0.5px;
 }

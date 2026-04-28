@@ -31,7 +31,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["assets/*.webm"],
+      "resources": ["assets/*.webm", "assets/*.mp4"],
       "matches": ["<all_urls>"]
     }
   ]

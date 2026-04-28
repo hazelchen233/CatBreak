@@ -121,12 +121,11 @@ async function ensureOverlayReady(tabId) {
   });
 }
 
-async function showCatOnActiveTab(state, settings) {
-  if (!state.activeTabId || !isInjectableUrl(state.activeTabUrl)) return false;
-
+async function showCatOnTab(tabId, url, settings) {
+  if (!tabId || !isInjectableUrl(url)) return false;
   try {
-    await ensureOverlayReady(state.activeTabId);
-    await chrome.tabs.sendMessage(state.activeTabId, {
+    await ensureOverlayReady(tabId);
+    await chrome.tabs.sendMessage(tabId, {
       action: 'showCat',
       countdownSeconds: settings.countdownSeconds
     });
@@ -134,6 +133,32 @@ async function showCatOnActiveTab(state, settings) {
   } catch {
     return false;
   }
+}
+
+async function showCatOnActiveTab(state, settings) {
+  return showCatOnTab(state.activeTabId, state.activeTabUrl, settings);
+}
+
+// While the global block is active (cat shown but not yet dismissed),
+// any tab the user touches must also get the overlay so they can't escape
+// by switching, opening, or navigating tabs.
+async function enforceBlockOnTab(tab) {
+  if (!tab || !tab.id) return;
+  const state = await getTimerState();
+  if (!state.hasTriggered) return;
+  const settings = await getSettings();
+  if (!settings.enabled) return;
+  await showCatOnTab(tab.id, tab.url || '', settings);
+}
+
+async function broadcastHideCat() {
+  try {
+    const tabs = await chrome.tabs.query({});
+    await Promise.all(tabs.map(t => {
+      if (!t.id || !isInjectableUrl(t.url)) return Promise.resolve();
+      return chrome.tabs.sendMessage(t.id, { action: 'hideCat' }).catch(() => {});
+    }));
+  } catch { /* ignore */ }
 }
 
 async function checkGlobalTrigger() {
@@ -166,10 +191,21 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   await setActiveTab(activeInfo.tabId);
+  // If we are already blocking, re-show the cat on the newly focused tab.
+  try {
+    const tab = await chrome.tabs.get(activeInfo.tabId);
+    await enforceBlockOnTab(tab);
+  } catch { /* ignore */ }
   await checkGlobalTrigger();
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // Re-inject overlay once the tab has navigated/loaded so users cannot
+  // escape by navigating within the same tab.
+  if (changeInfo.status === 'complete' || changeInfo.url) {
+    await enforceBlockOnTab(tab);
+  }
+
   if (!changeInfo.url && !tab.url) return;
 
   const state = await getTimerState();
@@ -178,6 +214,11 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   state.activeTabUrl = changeInfo.url || tab.url || '';
   await saveTimerState(state);
   await checkGlobalTrigger();
+});
+
+chrome.tabs.onCreated.addListener(async (tab) => {
+  // Newly opened tabs while blocking should also be covered.
+  await enforceBlockOnTab(tab);
 });
 
 chrome.tabs.onRemoved.addListener(async (tabId) => {
@@ -205,7 +246,21 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
 
 chrome.runtime.onMessage.addListener((message, sender) => {
   if (message.action === 'catDismissed') {
-    resetGlobalTimer(sender.tab || null);
+    // Clear the global block: reset the timer and hide the overlay on every
+    // other tab as well.
+    (async () => {
+      await resetGlobalTimer(sender.tab || null);
+      await broadcastHideCat();
+    })();
+  }
+
+  if (message.action === 'settingsUpdated') {
+    // Re-apply settings: reset elapsed time and trigger flag so the new
+    // trigger time / countdown / whitelist take effect immediately.
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+      await resetGlobalTimer(tabs[0] || null);
+      await checkGlobalTrigger();
+    });
   }
 
   if (message.action === 'getTimeLeft' && sender.tab) {
