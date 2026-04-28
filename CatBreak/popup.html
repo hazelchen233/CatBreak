@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatBreak Settings</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <div class="popup-header">
+      <h1>🐱 CatBreak</h1>
+      <p class="popup-desc">Anti-addiction Reminder</p>
+    </div>
+
+    <div class="popup-section">
+      <div class="setting-row">
+        <label>Enable Extension</label>
+        <label class="toggle">
+          <input type="checkbox" id="enabled" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <label class="setting-label">Trigger Time (Minutes)</label>
+      <div class="setting-row">
+        <input type="range" id="triggerMinutes" min="1" max="120" value="30" class="range-input">
+        <span id="triggerValue" class="range-value">30</span>
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <label class="setting-label">Forced Rest Countdown (Seconds)</label>
+      <div class="setting-row">
+        <input type="range" id="countdownSeconds" min="10" max="120" value="30" class="range-input">
+        <span id="countdownValue" class="range-value">30</span>
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <label class="setting-label">Whitelist Domains (No Reminders)</label>
+      <textarea id="whitelist" class="whitelist-input" placeholder="One domain per line, e.g.:&#10;google.com&#10;stackoverflow.com"></textarea>
+    </div>
+
+    <div class="popup-section">
+      <button id="testBtn" class="test-btn">🐾 Test Cat Effect</button>
+    </div>
+
+    <div id="statusMsg" class="status-msg"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
